@@ -1,0 +1,33 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: holamundo-docker
+    env: dev
+  name: holamundo-docker
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'holamundo-docker:latest'
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: 'https://github.com/haschel/curso-openshiftpublic.git'
+    type: Git
+  strategy:
+    dockerStrategy:
+    type: Docker
+  triggers:
+    - imageChange:
+        lastTriggeredImageID: >-
+          172.30.1.1:5000/openshift/python@sha256:ac50754646f0d37616515fb30467d8743fb12954260ec36c9ecb5a94499447e0
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 1ef31675656e25ac
+      type: Generic
+    - github:
+        secret: 82da971cd15129f4
+      type: GitHub
